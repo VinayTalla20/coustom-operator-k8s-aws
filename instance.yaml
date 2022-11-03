@@ -1,0 +1,16 @@
+          
+ --------------------------------------------------------------------------------------
+ Manifest for CRD   [ Kind = Instance, Group = aws.com, Version = v1alpha1, plural = instances ]
+ -----------------------------------------------------------------------------------------
+ 
+ 
+apiVersion: aws.com/v1alpha1
+kind: Instance
+metadata:
+  name: aws-instance
+spec:
+  instanceList: true
+  showTags: true
+  
+  
+
