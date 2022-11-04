@@ -1,0 +1,8 @@
+apiVersion: aws.com/v1alpha1
+kind: ListInstance
+metadata:
+  name: instances-list
+spec:
+  displayInstanceID: true
+  location: "ap-south-1"
+  displayInstanceStates: true
