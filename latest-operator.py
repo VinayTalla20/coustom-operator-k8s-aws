@@ -54,34 +54,32 @@ def aws_connect():
     print(ec2_states)
 
 
-aws_connect()
-
-
-@kopf.on.create('instances')
+@kopf.on.create('listinstances')
 def crd(spec, **kwargs):
     global resource_name
     resource_name = kwargs['body']['metadata']['name']
     print("Invoking Crd functions")
     aws_connect()
 
-
-#kopf.adopt()
-i = 0
-while i < len(ec2_ids):
-    manifest_instance = yaml.safe_load(f"""
+    i = 0
+    while i < len(ec2_ids):
+          manifest_instance = yaml.safe_load(f"""
                       apiVersion: aws.com/v1alpha1
                       kind: Instance
                       metadata:
-                        name: vinay-{i}
+                        name: {resource_name}-{i}
                       spec:
                         instanceId: {ec2_ids[i]}
                         instanceState: {ec2_states[i]}
+                        instanceLocation: {availability_zones[i]}
                                 """)
-    print(manifest_instance)
-    i += 1
+          print(manifest_instance)
+          i += 1
 
-    #crd_create = kubernetes.client.CustomObjectsApi()
-    #resource_create = crd_create.create_cluster_custom_object(group="aws.com", version="v1alpha1", plural="instances", body=manifest_instance)
-    #print(resource_create)
+          crd_create = kubernetes.client.CustomObjectsApi()
+          resource_create = crd_create.create_cluster_custom_object(group="aws.com", version="v1alpha1", plural="instances", body=manifest_instance)
+          print(resource_create)
+
+print("Successfully Created Instance Object")
 
 # zone_patch = '{"spec": {"location": "' + f'{availability_zones[0].capitalize()}' + '"}}'
