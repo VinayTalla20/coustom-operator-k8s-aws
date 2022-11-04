@@ -1,0 +1,37 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: listinstances.aws.com
+spec:
+  scope: Cluster
+  group: aws.com
+  names:
+    kind: ListInstance
+    plural: listinstances
+    singular: listinstance
+    shortNames:
+      - listinst
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                location:
+                   type: string
+                displayInstanceID:
+                   type: boolean
+                displayInstanceStates:
+                  type: boolean
+                displayPublicIP:
+                   type: boolean
+      additionalPrinterColumns:
+        - name: Location
+          type: string
+          description: Provide location were EC2 instaces are running
+          jsonPath: .spec.location
