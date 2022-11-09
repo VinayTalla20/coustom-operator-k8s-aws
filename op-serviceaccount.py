@@ -6,16 +6,26 @@ from kubernetes import config, client
 import os
 import yaml
 
+serviceaccount = os.getenv("SERVICEACCOUNT")
 
-def main():
+get_token = open(f"{serviceaccount}/token", "r")
+serviceaccount_token= get_token.read()
+get_token.close()
+
+cacert = os.getenv("CACERT")
+apiserver = os.getenv("APISERVER")
+
+
+
+def cluster_connection():
     # Define the barer token we are going to use to authenticate.
-    token = "x6exN1z4xd3FC23JltLzKPLr9vln92mG36_hrKH8imDu-iw4hpCtVbv2-_PWN6b_jI2i0uaKbLbmXurJJQFbxttfZ0M0EgRgh135Mi_Q_4DxGVhvDSO8YxzM68EcNIaMpyS4oKbsIjMVt6g"
+    token = serviceaccount_token
 
     # Create a configuration object
     connection = client.Configuration()
 
     # Specify the endpoint of your Kube cluster
-    connection.host = "https://kubernetes.default.svc.cluster.local"
+    connection.host = apiserver
 
     # connection.verify_ssl = False
 
@@ -23,7 +33,7 @@ def main():
     connection.verify_ssl = True
 
     # ssl_ca_cert is the filepath to the file that contains the certificate.
-    connection.ssl_ca_cert = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+    connection.ssl_ca_cert = cacert
 
     connection.api_key = {"authorization": "Bearer " + token}
 
@@ -35,7 +45,8 @@ def main():
     ret = v1.list_cluster_custom_object(group="aws.com", version="v1alpha1", plural="instances")
 
 
-main()
+cluster_connection()
+print("Sucessfully Connected to Cluster")
 
 num = None
 ec2_ids = []
