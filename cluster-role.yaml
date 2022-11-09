@@ -1,0 +1,8 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: crd-aws.com
+rules:
+  - apiGroups: ["aws.com"]
+    resources: ["instances", "listinstances"]
+    verbs: ["get", "list", "watch", "update", "patch", "create", "delete", "deletecollection"]
